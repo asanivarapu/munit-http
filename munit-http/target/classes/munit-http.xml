@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd">
+	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="fb14e19c-eec7-43c2-aee7-981fdbf29514" >
+		<http:listener-connection host="0.0.0.0" port="8082" />
+	</http:listener-config>
+	<flow name="munit-httpFlow" doc:id="4123ce14-6e02-4773-aecc-d7d94dfb7f3e" >
+		<http:listener doc:name="Listener" doc:id="3a33a040-af84-465e-a024-bc64c70e8c1f" config-ref="HTTP_Listener_config" path="/httpdemo"/>
+		<set-payload value="#[attributes.queryParams.decisionKey]" doc:name="decisionKey" doc:id="3ac3ab83-7fe2-49b9-9897-c4cac6ff0d49" />
+		<flow-ref doc:name="decisionFlow" doc:id="dbab19a6-45d7-489f-9ba5-de2b7d95f1b1" name="decisionFlow"/>
+		<choice doc:name="Choice" doc:id="06593846-2238-4885-b1fa-8ee94fdd7e5c" >
+			<when expression='#[vars.decisionVariable == "decision1"]'>
+				<set-payload value="#['Decision 1 was taken']" doc:name="Value" doc:id="ee99f8f4-bce0-4020-a7b2-7eb15ac98076" />
+			</when>
+			<otherwise >
+				<set-payload value="#['Decision 2 was taken']" doc:name="Value" doc:id="14ebf7ae-404a-4f38-a4d5-ab30f45de194" />
+			</otherwise>
+		</choice>
+	</flow>
+	<flow name="decisionFlow" doc:id="32acaeb8-a37d-41dd-9d28-4b3dbe2d01c0" >
+		<choice doc:name="Choice" doc:id="05cca288-a2ed-4a00-a2fe-bd2f8cf137da" >
+			<when expression='#[payload == "value1"]'>
+				<flow-ref doc:name="decision1Flow" doc:id="fa3aae3c-176d-4cea-b120-c557ba39cb35" name="decision1Flow"/>
+			</when>
+			<otherwise>
+				<flow-ref doc:name="decision2Flow" doc:id="46ecd1fb-d46a-44c5-916e-100dd14313f9" name="decision2Flow"/>
+			</otherwise>
+		</choice>
+	</flow>
+	<sub-flow name="decision1Flow" doc:id="55ac7e89-1eaf-4d5d-9a18-8fee472d6034" >
+		<set-variable value='#["decision1"]' doc:name="decisionVariable" doc:id="81fc324c-3e6f-41a5-af48-dc63a593d8ce" variableName="decisionVariable" />
+	</sub-flow>
+	<sub-flow name="decision2Flow" doc:id="4780bf9b-2018-49a9-b6f5-6c45e0bef7ae" >
+		<set-variable value='#["decision2"]' doc:name="decisionVariable" doc:id="9e466acc-b534-4ef1-92bd-c0c1d203128c" variableName="decisionVariable" />
+	</sub-flow>
+</mule>
