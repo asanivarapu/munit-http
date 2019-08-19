@@ -5,8 +5,10 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
 http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd">
 	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="fb14e19c-eec7-43c2-aee7-981fdbf29514" >
-		<http:listener-connection host="0.0.0.0" port="8082" />
+		<http:listener-connection host="0.0.0.0" port="${http.port}" />
 	</http:listener-config>
+	<configuration-properties doc:name="Configuration properties"
+		 file="mule-artifact.properties" />
 	<flow name="munit-httpFlow" doc:id="4123ce14-6e02-4773-aecc-d7d94dfb7f3e" >
 		<http:listener doc:name="Listener" doc:id="3a33a040-af84-465e-a024-bc64c70e8c1f" config-ref="HTTP_Listener_config" path="/httpdemo"/>
 		<set-payload value="#[attributes.queryParams.decisionKey]" doc:name="decisionKey" doc:id="3ac3ab83-7fe2-49b9-9897-c4cac6ff0d49" />
